@@ -216,8 +216,7 @@
         
         <div class="ejemplos-contenedor">
             <span class="ejemplos-label">Jurisdicción / Áreas de Pronóstico:</span>
-    <div class="boton-ejemplo" onclick="setNombre('INFORME BAHÍA DE PUNTA ARENAS')">VALPARAÍSO</div>
-
+            <div class="boton-ejemplo" onclick="setNombre('INFORME BAHÍA DE PUNTA ARENAS')">VALPARAÍSO</div>
         </div>
 
         <textarea id="textoInforme" placeholder="Pegue el contenido del informe meteorológico aquí..."></textarea>
@@ -237,29 +236,25 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <script>
-        // Variables Globales para manejo de fechas
         let mesGlobalIndex = new Date().getMonth();
         let añoGlobal = new Date().getFullYear();
         let ultimoDiaProcesado = 0;
 
-        // Función para establecer el nombre del archivo
         function setNombre(nombre) { 
             document.getElementById('nombreArchivo').value = nombre; 
         }
 
-        // Normalización de texto (Quita tildes excepto Ñ)
         function normalizarTextoBase(texto) {
             return texto.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, function(match) {
                 return match === '\u0303' ? match : ''; 
             }).normalize("NFC");
         }
 
-        // Formateo inteligente de fechas
         function formatearFechaEspecial(linea) {
             const regex = /(PRONOSTICO VALIDO|VALIDO) DESDE (\d{6}) HASTA (\d{6})/;
             const match = linea.match(regex);
             if (match) {
-                const prefijoOriginal = match[1]; 
+                const tipoPrefijo = match[1]; // "PRONOSTICO VALIDO" o "VALIDO"
                 const d1_num = parseInt(match[2].substring(0, 2));
                 const h1 = match[2].substring(2, 4) + ":" + match[2].substring(4, 6);
                 const d2_num = parseInt(match[3].substring(0, 2));
@@ -278,24 +273,26 @@
                 const diaNombre1 = diasSemana[f1.getDay()];
                 const mesNombre1 = meses[mesGlobalIndex];
 
-                let parteFinal;
+                // Determinar el inicio del texto basado en el prefijo original
+                let prefijoFinal = (tipoPrefijo === "VALIDO") ? "VALIDO:" : "PRONOSTICO VALIDO";
+
                 if (d1_num === d2_num) {
-                    parteFinal = `HASTA ${h2} HRS.`;
+                    // Mismo día
+                    return `${prefijoFinal} ${diaNombre1} ${match[2].substring(0, 2)} DE ${mesNombre1} ENTRE LAS ${h1} Y ${h2} HRS.`;
                 } else {
+                    // Día distinto
                     let m2Idx = (d2_num < d1_num) ? (mesGlobalIndex + 1) % 12 : mesGlobalIndex;
                     let a2 = (d2_num < d1_num && mesGlobalIndex === 11) ? añoGlobal + 1 : añoGlobal;
                     const f2 = new Date(a2, m2Idx, d2_num);
-                    parteFinal = `HASTA ${diasSemana[f2.getDay()]} ${match[3].substring(0, 2)} DE ${meses[m2Idx]} ${h2} HRS.`;
+                    const diaNombre2 = diasSemana[f2.getDay()];
+                    const mesNombre2 = meses[m2Idx];
+                    
+                    return `${prefijoFinal} ${diaNombre1} ${match[2].substring(0, 2)} DE ${mesNombre1} ${h1} HASTA ${diaNombre2} ${match[3].substring(0, 2)} DE ${mesNombre2} ${h2} HRS.`;
                 }
-
-                return (prefijoOriginal === "PRONOSTICO VALIDO") 
-                    ? `PRONOSTICO VALIDO ${diaNombre1} ${match[2].substring(0, 2)} DE ${mesNombre1} ${h1} ${parteFinal}`
-                    : `VALIDO DESDE ${diaNombre1} ${match[2].substring(0, 2)} DE ${mesNombre1} ${h1} ${parteFinal}`;
             }
             return linea;
         }
 
-        // Generación de la Vista Previa
         function generarVista() {
             mesGlobalIndex = new Date().getMonth();
             añoGlobal = new Date().getFullYear();
@@ -368,7 +365,6 @@
             document.getElementById("vistaPrevia").innerHTML = htmlContent;
         }
 
-        // Generación de PDF
         async function generarPDF(formato) {
             const { jsPDF } = window.jspdf;
             const element = document.getElementById("vistaPrevia");
@@ -388,5 +384,4 @@
         }
     </script>
 </body>
-
 </html>
