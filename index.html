@@ -45,7 +45,7 @@
             position: absolute; 
             left: 100px;          
             top: 40px;           
-            height: 350px;       
+            height: 300px;       
             width: auto;
             filter: drop-shadow(0 0 15px rgba(76, 201, 240, 0.4));
         }
@@ -175,7 +175,7 @@
         .header-normal { font-weight: normal; display: block; }
         
         .logo-anchor { width: 120px; text-align: right; }
-        .logo-estilizado { height: 130px; width: auto; display: inline-block; }
+        .logo-estilizado { height: 155px; width: auto; display: inline-block; }
         
         .titulo-principal { 
             text-align: center; 
@@ -204,7 +204,7 @@
 
     <div class="controles">
         <div class="cabecera-contenedor">
-            <img src="https://archive.org/download/escudo-servimet/ESCUDO%20SERVIMET.png" class="logo-pagina" alt="Logo Armada">
+            <img src="https://ia600701.us.archive.org/9/items/logo-servimet_202602/file_00000000ef54720e86c73d7fc1640d52.png" class="logo-pagina" alt="Logo Armada">
             <div class="texto-cabecera">
                 <div class="titulo-web">Centro Zonal de Meteorología Marina</div>
                 <div class="titulo-web">Magallanes y Antártica ChIlena</div>
@@ -302,7 +302,7 @@
             if (!texto) return;
 
             let lineasOriginales = texto.split("\n").map(l => l.trim()).filter(l => l !== "");
-            const urlLogo = "https://archive.org/download/escudo-servimet/ESCUDO%20SERVIMET.png";
+            const urlLogo = "https://ia600701.us.archive.org/9/items/logo-servimet_202602/file_00000000ef54720e86c73d7fc1640d52.png";
 
             let htmlContent = `
                 <div class="header-container">
@@ -385,4 +385,5 @@
     </script>
 </body>
 </html>
+
 
